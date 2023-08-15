@@ -17,13 +17,14 @@ void push(t_stack **top, char stream);
 void pop(t_stack **top);
 char peek(t_stack **top);
 bool SignBitIsNegative(char signBit);
+void pause ( void );
 
 int main()
 {
     t_stack *stackForward = NULL, *stackBackward = NULL;
     char buffer[10000] = {'\0'};
     char *token;
-
+    printf("Input float: ");
     fgets(buffer, sizeof(buffer), stdin);
     if (buffer[strlen(buffer) - 1] == '\n')
     {
@@ -32,11 +33,11 @@ int main()
 
     float number = StringToFloat(buffer);
 
-    // Sign Bit
+    // Append Sign Bit
     char signBit = SignBitIsNegative(number) ? '1' : '0';
     push(&stackBackward, signBit);
 
-    // Mantissa
+    // Constructing Mantissa Part
     int exponent = 0;
     float fractionalPart = abs_double(fmod(number, 1.0));
     while (fractionalPart > 0.0 && exponent >= -127)
@@ -61,7 +62,7 @@ int main()
         push(&stackBackward, exponentBits[i]);
     }
 
-    // Moving the representation from backward to forward stack
+    // Reverse stack
     while (stackBackward != NULL)
     {
         push(&stackForward, peek(&stackBackward));
@@ -80,6 +81,7 @@ int main()
     unsigned int hexValue;
     memcpy(&hexValue, &number, sizeof(hexValue));
     printf("\nHexadecimal Representation: %#08X\n", hexValue);
+    pause();
     return 0;
      // Thai version
 //     // Print the IEEE 754 representation from the forward stack
@@ -136,7 +138,7 @@ char peek(t_stack **top)
     {
         return (*top)->string;
     }
-    return '\0'; // Return a default value in case of an empty stack
+    return '\0';
 }
 
 bool SignBitIsNegative(char signBit)
@@ -154,4 +156,11 @@ double mod_double(double dividend,double divisor){
 
 float StringToFloat(char* String){
      return atof(String);
+}
+
+void pause ( void )
+{
+  printf ( "Press enter to continue..." );
+  fflush ( stdout );
+  getchar();
 }
