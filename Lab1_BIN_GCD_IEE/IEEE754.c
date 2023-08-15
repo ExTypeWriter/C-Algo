@@ -100,8 +100,6 @@ int main()
 //     return 0;
 }
 
-
-
 void push(t_stack **top, char stream)
 {
     t_stack *newNode = (t_stack *)calloc(1, sizeof(t_stack));
