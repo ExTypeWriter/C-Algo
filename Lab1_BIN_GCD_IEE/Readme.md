@@ -1,4 +1,4 @@
-# IEEE 754 Floating-Point Representation Program
+# IEEE 754 Floating-Point Binary Representation Program
 This program converts a given decimal number into its IEEE 754 floating-point representation. It supports both positive and negative numbers, Including special case.
 
 ## Table of Contents
