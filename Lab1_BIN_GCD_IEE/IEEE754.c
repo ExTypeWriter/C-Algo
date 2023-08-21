@@ -13,6 +13,7 @@ typedef struct t_stack
     char string;
     struct t_stack *next;
 } t_stack;
+
 void push(t_stack **top, char stream);
 void pop(t_stack **top);
 char peek(t_stack **top);
@@ -38,7 +39,6 @@ int main()
     double number = atof(buffer);
     // Append Sign Bit
     char signBit = SignBitIsNegative(buffer[0]) ? '1' : '0';
-    char space = ' ';
     push(&stackBackward, signBit);
     if (isnan(number)) // Handle NaN case
     {
@@ -78,9 +78,8 @@ int main()
     }
     else
     {
-        // push(&stackBackward, space);
         // Exponent part
-        int exponentPart = (int)round(log2(abs_double(number)));
+        int exponentPart = (int)floor(log2(fabs(number))); // Change here
         int biasedExponent = exponentPart + EXPO_BIAS;
 
         // Convert exponent to binary and push to stack
@@ -89,7 +88,6 @@ int main()
             char bit = ((biasedExponent >> i) & 1) + '0';
             push(&stackBackward, bit);
         }
-        // push(&stackBackward, space);
         // Mantissa part
         int trailing_zeros;
         int bin_count = 0;
@@ -117,45 +115,6 @@ int main()
     }
     temp[j] = '\0';
     printf("\n");
-    // printf("temp string: %s\n", temp);
-
-    // Convert binary representation to hexadecimal
-    // unsigned long long int hexNum = 0;
-    // int bitPosition = 0;
-    // int tempLength = strlen(temp);
-    // int k = 0;
-    // char tempRev[64];
-    // for (int i = tempLength - 1; i >= 0; i--)
-    // {
-    //     int bit = temp[i] - '0';
-    //     hexNum |= (bit << bitPosition);
-    //     bitPosition++;
-
-    //     if (bitPosition == 4 || i == 0)
-    //     {
-    //         char hexDigit;
-    //         if (hexNum < 10)
-    //         {
-    //             hexDigit = hexNum + '0';
-    //         }
-    //         else
-    //         {
-    //             hexDigit = hexNum - 10 + 'A';
-    //         }
-    //         tempRev[k] = (char)hexDigit;
-    //         k++;
-    //         hexNum = 0;
-    //         bitPosition = 0;
-    //     }
-    // }
-    // for (int i = 0; i < k / 2; i++)
-    // {
-    //     char tempChar = tempRev[i];
-    //     tempRev[i] = tempRev[k - 1 - i];
-    //     tempRev[k - 1 - i] = tempChar;
-    // }
-    // printf("Hexadecimal Representation: %s", tempRev);
-    // printf("\n");
     pause();
     return 0;
 }
@@ -212,13 +171,16 @@ double round(double num)
 void push_binary(double Num, t_stack **stack, int *zero_count, int *index_first)
 {
     int num = (int)Num;
-    // printf("int part : %d\n",num);
+    if (num == 0)
+    {
+        return;
+    }
     if (num > 1)
     {
         (*zero_count)++;
         push_binary(num / 2, stack, zero_count, index_first);
     }
-    if (*index_first == 0)
+    if (*index_first == 0) // Skip pushing first index
     {
         (*index_first)++;
     }
@@ -227,25 +189,29 @@ void push_binary(double Num, t_stack **stack, int *zero_count, int *index_first)
         char bit = (num % 2) + '0';
         push(stack, bit);
     }
-    // printf("Current zero count %d\n",*zero_count);
 }
+
 void push_frac(double Num, t_stack **stack, int *zero_count, int *index_first)
 {
-    double fraction = Num - (int)Num;
-    for (int i = 0; i < SIG_BIT; i++) //  Push till all bit filled.
-    {
-        fraction *= 2;
-        int bit = (int)fraction;
-        char bit_char = bit + '0';
-        (*zero_count)++;
-        push(stack, bit_char);
-        fraction -= bit;
-
-        if (fraction == 0)
+    double fraction = fabs(Num - (int)Num); // Remove int part and take absolute value.
+    
+    if (fraction > 0.0) {
+        for (int i = 0; i < SIG_BIT; i++) // Push till all bit filled.
         {
-            break;
+            fraction *= 2;
+            int bit = (int)fraction;
+            char bit_char = bit + '0';
+            (*zero_count)++;
+            push(stack, bit_char);
+            fraction -= bit;
+
+            if (fraction == 0) // If no fraction
+            {
+                break;
+            }
         }
     }
+
     // Push zero to all empty bit.
     while (*zero_count < SIG_BIT)
     {
