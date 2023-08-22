@@ -5,8 +5,6 @@
 #include <math.h>
 #define EXPO_BIT 11
 #define SIG_BIT 52
-#define EXPO_BIAS 1023
-#define EXPO_BI_MAX 2047
 
 typedef struct t_stack
 {
@@ -17,10 +15,7 @@ typedef struct t_stack
 void push(t_stack **top, char stream);
 void pop(t_stack **top);
 char peek(t_stack **top);
-double abs_double(double num);
-double round(double num);
-void push_binary(double Num, t_stack **stack, int *zero_count, int *index_first);
-void push_frac(double Num, t_stack **stack, int *zero_count, int *index_first);
+void decimalToBinary(double decimal, t_stack **stack);
 bool SignBitIsNegative(char number);
 void pause(void);
 
@@ -30,11 +25,15 @@ int main()
     char buffer[10000] = {'\0'};
     char *token;
     printf("Input number (decimal): ");
-    fgets(buffer, sizeof(buffer), stdin);
-    if (buffer[strlen(buffer) - 1] == '\n')
-    {
-        buffer[strlen(buffer) - 1] = '\0';
-    }
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+    	printf("Error reading input.\n");
+    	return 1;
+	}
+
+	if (buffer[strlen(buffer) - 1] == '\n') {
+	    buffer[strlen(buffer) - 1] = '\0';
+	}
+	
 
     double number = atof(buffer);
     // Append Sign Bit
@@ -51,14 +50,14 @@ int main()
             push(&stackBackward, '1');
         }
     }
-    else if (isinf(number))
+    else if (isinf(number)) // Handle infinity case
     {
-        // Set exponent bits to all 1s
+        // Set exponent bits to all 1
         for (int i = 0; i < EXPO_BIT; i++)
         {
             push(&stackBackward, '1');
         }
-        // Set mantissa bits to all 0s
+        // Set mantissa bits to all 0
         for (int i = 0; i < SIG_BIT; i++)
         {
             push(&stackBackward, '0');
@@ -73,47 +72,26 @@ int main()
         }
         for (int i = 0; i < SIG_BIT; i++)
         {
-            push(&stackBackward, '0'); // Mantissa bits (all set to 0)
+            push(&stackBackward, '0'); // Push trailing zero
         }
     }
     else
     {
-        // Exponent part
-        int exponentPart = (int)floor(log2(fabs(number))); // Change here
-        int biasedExponent = exponentPart + EXPO_BIAS;
-
-        // Convert exponent to binary and push to stack
-        for (int i = EXPO_BIT - 1; i >= 0; i--)
-        {
-            char bit = ((biasedExponent >> i) & 1) + '0';
-            push(&stackBackward, bit);
-        }
-        // Mantissa part
-        int trailing_zeros;
-        int bin_count = 0;
-        int index_first = 0;
-        push_binary(number, &stackBackward, &bin_count, &index_first);
-        push_frac(number, &stackBackward, &bin_count, &index_first);
-        trailing_zeros = 52 - bin_count;
-    }
-    // Reverse stack
+	decimalToBinary(number, &stackBackward);
+}
+	// Reverse stack
     while (stackBackward != NULL)
     {
         push(&stackForward, peek(&stackBackward));
         pop(&stackBackward);
     }
-    char temp[64];
-    int j = 0;
     // Print the IEEE 754 representation from the forward stack
     printf("Binary Representation: ");
     while (stackForward != NULL)
     {
         printf("%c", peek(&stackForward));
-        temp[j] = peek(&stackForward);
-        j++;
         pop(&stackForward);
     }
-    temp[j] = '\0';
     printf("\n");
     pause();
     return 0;
@@ -158,65 +136,16 @@ char peek(t_stack **top)
     return '\0';
 }
 
-double abs_double(double num)
-{
-    return fabs(num);
-}
+void decimalToBinary(double decimal, t_stack **stack) {
+    unsigned char *binaryBytes = (unsigned char *)&decimal;
 
-double round(double num)
-{
-    return floor(num);
-}
-
-void push_binary(double Num, t_stack **stack, int *zero_count, int *index_first)
-{
-    int num = (int)Num;
-    if (num == 0)
-    {
-        return;
-    }
-    if (num > 1)
-    {
-        (*zero_count)++;
-        push_binary(num / 2, stack, zero_count, index_first);
-    }
-    if (*index_first == 0) // Skip pushing first index
-    {
-        (*index_first)++;
-    }
-    else
-    {
-        char bit = (num % 2) + '0';
-        push(stack, bit);
-    }
-}
-
-void push_frac(double Num, t_stack **stack, int *zero_count, int *index_first)
-{
-    double fraction = fabs(Num - (int)Num); // Remove int part and take absolute value.
-    
-    if (fraction > 0.0) {
-        for (int i = 0; i < SIG_BIT; i++) // Push till all bit filled.
-        {
-            fraction *= 2;
-            int bit = (int)fraction;
-            char bit_char = bit + '0';
-            (*zero_count)++;
-            push(stack, bit_char);
-            fraction -= bit;
-
-            if (fraction == 0) // If no fraction
-            {
-                break;
-            }
+    for (int byteIndex = sizeof(double) - 1; byteIndex >= 0; byteIndex--) {
+        unsigned char byte = binaryBytes[byteIndex];
+        
+        for (int bitIndex = 7; bitIndex >= 0; bitIndex--) {
+            char bit = (byte >> bitIndex) & 1;
+            push(stack, bit + '0'); 
         }
-    }
-
-    // Push zero to all empty bit.
-    while (*zero_count < SIG_BIT)
-    {
-        push(stack, '0');
-        (*zero_count)++;
     }
 }
 
