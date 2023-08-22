@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include <math.h>
 #define EXPO_BIT 11
 #define SIG_BIT 52
@@ -12,33 +13,59 @@ typedef struct t_stack
     struct t_stack *next;
 } t_stack;
 
+
 void push(t_stack **top, char stream);
 void pop(t_stack **top);
 char peek(t_stack **top);
 void decimalToBinary(double decimal, t_stack **stack);
 bool SignBitIsNegative(char number);
+double userInput(t_stack **stack){
+    char buffer[10000] = {'\0'};
+    char *token;
+    bool inputCheck = false;
+    while (!inputCheck) {
+        printf("Input number (decimal): ");
+        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+            printf("Error reading input.\n");
+            return 1;
+        }
+
+        // Remove newline character if present
+        if (buffer[strlen(buffer) - 1] == '\n') {
+            buffer[strlen(buffer) - 1] = '\0';
+        }
+
+        bool validInput = true;
+        if(strcmp(buffer,"NaN") == 0 ||strcmp(buffer,"-NaN" == 0) || strcmp(buffer,"Infinity") == 0|| strcmp(buffer,"-Infinity") == 0){
+            validInput = true;
+        }
+        else{
+            for (size_t i = 0; i < strlen(buffer); i++) {
+                if (!isdigit(buffer[i]) && buffer[i] != '-' && buffer[i] != '+'&& buffer[i] != '.') {
+                    validInput = false;
+                    break;
+                }
+            }
+        }
+
+        if (validInput) {
+            inputCheck = true;
+        } else {
+            printf("Please input valid integer characters.\n");
+        }
+    }
+    // Append sign bit
+    char signBit = SignBitIsNegative(buffer[0]) ? '1' : '0';
+    push(stack, signBit);
+    double number_out = atof(buffer);
+    return number_out;
+}
 void pause(void);
 
 int main()
 {
     t_stack *stackForward = NULL, *stackBackward = NULL;
-    char buffer[10000] = {'\0'};
-    char *token;
-    printf("Input number (decimal): ");
-    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-    	printf("Error reading input.\n");
-    	return 1;
-	}
-
-	if (buffer[strlen(buffer) - 1] == '\n') {
-	    buffer[strlen(buffer) - 1] = '\0';
-	}
-	
-
-    double number = atof(buffer);
-    // Append Sign Bit
-    char signBit = SignBitIsNegative(buffer[0]) ? '1' : '0';
-    push(&stackBackward, signBit);
+    double number = userInput(&stackBackward);
     if (isnan(number)) // Handle NaN case
     {
         for (int i = 0; i < EXPO_BIT; i++)
@@ -77,9 +104,9 @@ int main()
     }
     else
     {
-	decimalToBinary(number, &stackBackward);
-}
-	// Reverse stack
+        decimalToBinary(number, &stackBackward);
+    }
+    // Reverse stack
     while (stackBackward != NULL)
     {
         push(&stackForward, peek(&stackBackward));
@@ -136,15 +163,18 @@ char peek(t_stack **top)
     return '\0';
 }
 
-void decimalToBinary(double decimal, t_stack **stack) {
+void decimalToBinary(double decimal, t_stack **stack)
+{
     unsigned char *binaryBytes = (unsigned char *)&decimal;
 
-    for (int byteIndex = sizeof(double) - 1; byteIndex >= 0; byteIndex--) {
+    for (int byteIndex = sizeof(double) - 1; byteIndex >= 0; byteIndex--)
+    {
         unsigned char byte = binaryBytes[byteIndex];
-        
-        for (int bitIndex = 7; bitIndex >= 0; bitIndex--) {
+
+        for (int bitIndex = 7; bitIndex >= 0; bitIndex--)
+        {
             char bit = (byte >> bitIndex) & 1;
-            push(stack, bit + '0'); 
+            push(stack, bit + '0');
         }
     }
 }

@@ -20,7 +20,8 @@ The program utilizes a custom stack data structure `t_stack` to store binary bit
 - `push(t_stack **top, char stream)`: Pushes a character onto the stack.
 - `pop(t_stack **top)`: Pops the top element from the stack.
 - `peek(t_stack **top)`: Returns the top element of the stack without popping it.
-- `decimalToBinary(double decimal, t_stack **stack)`: Converts a double into its binary representation and pushes the bits onto the stack.
+- `decimalToBinary(double decimal, t_stack **stack)`: Converts a double into its 
+binary representation and pushes the bits onto the stack.
 
 ### Main Function
 
@@ -37,8 +38,8 @@ The program utilizes a custom stack data structure `t_stack` to store binary bit
 - `push_binary(double Num, t_stack **stack, int *zero_count, int *index_first)`: Pushes binary bits of the integer part of a number onto the stack.
 - `push_frac(double Num, t_stack **stack, int *zero_count, int *index_first)`: Pushes binary bits of the fractional part of a number onto the stack.
 - `SignBitIsNegative(char number)`: Checks if a character represents a negative sign.
+- `double userInput(t_stack **stack)` : Recieve user input with fgets then tokenize them into characters to check for input format errors.
 - `pause(void)`: Pauses the program and waits for user input before program window exit.
-
 ### Usage
 
 1. Input a decimal number.
