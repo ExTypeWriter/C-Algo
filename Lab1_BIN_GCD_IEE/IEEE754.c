@@ -36,16 +36,12 @@ double userInput(t_stack **stack){
         }
 
         bool validInput = true;
-<<<<<<< HEAD
         if (strcmp(buffer, "NaN") == 0 || strcmp(buffer, "-NaN") == 0 || strcmp(buffer, "Infinity") == 0 || strcmp(buffer, "-Infinity") == 0) {
           validInput = true;
         }
-
-=======
         if(strcmp(buffer,"NaN") == 0 ||strcmp(buffer,"-NaN" == 0) || strcmp(buffer,"Infinity") == 0|| strcmp(buffer,"-Infinity") == 0){
             validInput = true;
         }
->>>>>>> e85668b482015d88756434e586cebb555e0da4ee
         else{
             for (size_t i = 0; i < strlen(buffer); i++) {
                 if (!isdigit(buffer[i]) && buffer[i] != '-' && buffer[i] != '+'&& buffer[i] != '.') {
