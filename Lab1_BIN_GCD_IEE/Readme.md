@@ -1,7 +1,6 @@
 # IEEE 754 Double Precision Floating-Point Conversion
 
-This program converts a decimal number into its IEEE 754 double-precision floating-point binary representation. It covers various scenarios such as normal numbers, special values (NaN and infinity), and zero.
-
+This program converts a decimal number into its IEEE 754 double-precision floating-point binary representatiion. it include hqndling for normal numbers, special values (NaN and infinity), and zero.
 ### Dependencies
 
 - Standard C libraries: `stdio.h`, `stdlib.h`, `stdbool.h`, `string.h`, `math.h`
