@@ -53,7 +53,7 @@ double userInput(t_stack **stack){
         if (validInput) {
             inputCheck = true;
         } else {
-            printf("Please input valid integer characters.\n");
+            printf("Please input valid format integer.\n");
         }
     }
     double number_out = atof(buffer);
