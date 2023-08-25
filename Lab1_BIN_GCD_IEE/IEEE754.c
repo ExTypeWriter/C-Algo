@@ -36,8 +36,10 @@ double userInput(t_stack **stack){
         }
 
         bool validInput = true;
-        if(strcmp(buffer,"NaN") == 0 ||strcmp(buffer,"-NaN" == 0) || strcmp(buffer,"Infinity") == 0|| strcmp(buffer,"-Infinity") == 0){
+        if(strcmp(buffer,"NaN") == 0 ||strcmp(buffer,"-NaN") == 0 || strcmp(buffer,"Infinity") == 0|| strcmp(buffer,"-Infinity") == 0){
             validInput = true;
+            char signBit = SignBitIsNegative(buffer[0]) ? '1' : '0';
+            push(stack, signBit);
         }
         else{
             for (size_t i = 0; i < strlen(buffer); i++) {
@@ -54,9 +56,6 @@ double userInput(t_stack **stack){
             printf("Please input valid integer characters.\n");
         }
     }
-    // Append sign bit
-    char signBit = SignBitIsNegative(buffer[0]) ? '1' : '0';
-    push(stack, signBit);
     double number_out = atof(buffer);
     return number_out;
 }
