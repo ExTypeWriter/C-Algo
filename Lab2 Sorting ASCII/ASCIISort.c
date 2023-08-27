@@ -38,11 +38,11 @@ int partition(char arr[], int leftmost_index, int rightmost_index)
 
 void quickSort(char arr[], int leftmost_index, int rightmost_index)
 {
-    int size = rightmost_index+1;
+    int size = rightmost_index + 1;
     if (leftmost_index < rightmost_index)
     {
         int pi = partition(arr, leftmost_index, rightmost_index);
-        printArray(arr,size);
+        printArray(arr, size);
         quickSort(arr, leftmost_index, pi - 1);
         quickSort(arr, pi + 1, rightmost_index);
     }
@@ -165,6 +165,8 @@ int main()
 {
     char KMUTT_STRING[] = {'K', 'I', 'N', 'G', 'M', 'O', 'N', 'G', 'K', 'U', 'T', 'U', 'N', 'I', 'V', 'E', 'R', 'S', 'I', 'T', 'Y'};
     int STRING_SIZE = strlen(KMUTT_STRING);
+    char originalArray[STRING_SIZE];
+    memcpy(originalArray, KMUTT_STRING, sizeof(KMUTT_STRING));
     int mode = inputMode();
 
     if (mode == 1)
@@ -188,11 +190,9 @@ int main()
         return 0;
     }
 
-    if (mode != 2)
-    {
-        printf("Original: ");
-        printArray(KMUTT_STRING, STRING_SIZE);
-    }
+    printf("Original: ");
+    printArray(originalArray, STRING_SIZE);
+
     printf("Sorted: ");
     printArray(KMUTT_STRING, STRING_SIZE);
 
