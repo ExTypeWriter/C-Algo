@@ -1,7 +1,7 @@
 class LinearSearch {
     public static void main(String[] args) {
-        int[] arr = { 42, 18, 17, 29, 55, 63, 91, 14, 37, 68 };
-        int out = linearSearch(arr, 1);
+        int[] arr = { 42, 18, 17, 55, 55, 63, 91, 14, 37, 68 };
+        int out = linearSearch(arr, 22);
         System.out.println(out);
         if(UniqueElement(arr)){
             System.out.println("Unique Array.");
@@ -15,10 +15,13 @@ class LinearSearch {
         int location = 0;
         int i = 0;
         while (i < arr.length) {
-            if (arr[i] - n == 0) {
+            if (arr[i] == n  ) {
                 System.out.println("Target found!");
                 location = i;
                 break;
+            }
+            if(arr[i] != n && i == arr.length - 1){
+                System.out.println("Target not found! return first element.");
             }
             i++;
         }
@@ -28,6 +31,7 @@ class LinearSearch {
         for(int i=0;i<arr.length;i++){
             for(int j=i+1;j<arr.length;j++){
                 if(arr[i]==arr[j]){
+                    System.out.println(String.valueOf(arr[i]) + " are duplicated!");
                     return false;
                 }
             }
