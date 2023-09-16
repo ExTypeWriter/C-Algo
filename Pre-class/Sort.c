@@ -86,35 +86,36 @@ void selectionSort(int *arr, int size)
     }
 }
 
-void merge(int arr[], int left_most, int middle_one, int right_most)
+
+void merge(int A[], int l, int m, int r)
 {
     int i, j, k;
-    int n1 = middle_one - left_most + 1;
-    int n2 = right_most - middle_one;
+    int n1 = m - l + 1;
+    int n2 = r - m;
 
     // Create temp arrays
     int Left_temp[n1], Right_temp[n2];
 
     // Copy data to temp arrays L[] and R[]
     for (i = 0; i < n1; i++)
-        Left_temp[i] = arr[left_most + i];
+        Left_temp[i] = A[l + i];
     for (j = 0; j < n2; j++)
-        Right_temp[j] = arr[middle_one + 1 + j];
+        Right_temp[j] = A[m + 1 + j];
 
     // Merge the temp arrays back into arr[l..r]
     i = 0;
     j = 0;
-    k = left_most;
+    k = l;
     while (i < n1 && j < n2)
     {
         if (Left_temp[i] <= Right_temp[j])
         {
-            arr[k] = Left_temp[i];
+            A[k] = Left_temp[i];
             i++;
         }
         else
         {
-            arr[k] = Right_temp[j];
+            A[k] = Right_temp[j];
             j++;
         }
         k++;
@@ -124,7 +125,7 @@ void merge(int arr[], int left_most, int middle_one, int right_most)
     // if there are any
     while (i < n1)
     {
-        arr[k] = Left_temp[i];
+        A[k] = Left_temp[i];
         i++;
         k++;
     }
@@ -133,7 +134,7 @@ void merge(int arr[], int left_most, int middle_one, int right_most)
     // if there are any
     while (j < n2)
     {
-        arr[k] = Right_temp[j];
+        A[k] = Right_temp[j];
         j++;
         k++;
     }
@@ -141,17 +142,17 @@ void merge(int arr[], int left_most, int middle_one, int right_most)
 
 // l is for left index and r is right index of the
 // sub-array of arr to be sorted
-void mergeSort(int arr[], int left_most, int right_most)
+void mergeSort(int arr[], int l, int r)
 {
-    if (left_most < right_most)
+    if (l < r)
     {
-        int middle_one = left_most + (right_most - left_most) / 2;
+        int m = l + (r - l) / 2;
 
         // Sort first and second halves
-        mergeSort(arr, left_most, middle_one);
-        mergeSort(arr, middle_one + 1, right_most);
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
 
-        merge(arr, left_most, middle_one, right_most);
+        merge(arr, l, m, r);
     }
 }
 
