@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 void displayArr(int *arr, int size)
 {
@@ -48,7 +49,7 @@ void insertionSort(int *arr, int size)
     {
         int j = i - 1;
         int key = arr[i];
-        while (j >= 0 && arr[j]>key)
+        while (j >= 0 && arr[j] > key)
         {
             swap(&arr[j], &arr[j + 1]);
             printf("current i = %d , j = %d : ", i, j);
@@ -83,7 +84,6 @@ void selectionSort(int *arr, int size)
         i++;
     }
 }
-
 
 void merge(int A[], int l, int m, int r)
 {
@@ -154,31 +154,71 @@ void mergeSort(int arr[], int l, int r)
     }
 }
 
-int HoarePartition(int arr[], int left_most, int right_most) {
+int HoarePartition(int arr[], int left_most, int right_most)
+{
     int pivot = arr[left_most];
     int i = left_most - 1;
     int j = right_most + 1;
 
-    do {
-        do {
+    do
+    {
+        do
+        {
             i++;
         } while (arr[i] < pivot);
 
-        do {
+        do
+        {
             j--;
         } while (arr[j] > pivot);
         swap(&arr[i], &arr[j]);
-    } while(i<j);
+    } while (i < j);
     swap(&arr[i], &arr[j]);
-    swap(&arr[left_most],&arr[j]);
+    swap(&arr[left_most], &arr[j]);
     return j;
 }
 
-void quickSort(int arr[], int left_most, int right_most) {
-    if (left_most < right_most) {
+void quickSort(int arr[], int left_most, int right_most)
+{
+    if (left_most < right_most)
+    {
         int partitionIndex = HoarePartition(arr, left_most, right_most);
         quickSort(arr, left_most, partitionIndex);
         quickSort(arr, partitionIndex + 1, right_most);
+    }
+}
+
+void heapify(int arr[], int size, int i)
+{
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < size && arr[left] > arr[largest])
+        largest = left;
+
+    if (right < size && arr[right] > arr[largest])
+        largest = right;
+
+    if (largest != i)
+    {
+        swap(&arr[i], &arr[largest]);
+        heapify(arr, size, largest);
+    }
+}
+
+void heapSort(int arr[], int size)
+{
+    for (int i = size / 2 - 1; i >= 0; i--)
+    {
+        heapify(arr, size, i);
+    }
+
+    for (int i = size - 1; i > 0; i--)
+    {
+        swap(&arr[0], &arr[i]);
+        displayArr(arr,size);
+        heapify(arr, i, 0);
     }
 }
 
@@ -194,6 +234,8 @@ int main()
     memcpy(temp3, array, size * sizeof(int));
     int *temp4 = malloc(size * sizeof(int));
     memcpy(temp4, array, size * sizeof(int));
+    int *temp5 = malloc(size * sizeof(int));
+    memcpy(temp5, array, size * sizeof(int));
     printf("Bubble sort before : ");
     displayArr(array, size);
     bubbleSort(array, size);
@@ -214,9 +256,9 @@ int main()
     selectionSort(temp3, size);
     printf("Merge sort after : ");
     displayArr(temp3, size);
-    printf("Quick sort before : ");
-    displayArr(temp4, size);
-    quickSort(temp4, 0,size-1);
-    printf("Quick sort after : ");
-    displayArr(temp4, size);
+    printf("Heap sort before : ");
+    displayArr(temp5, size);
+    heapSort(temp5, size);
+    printf("Heap sort after : ");
+    displayArr(temp5, size);
 }
