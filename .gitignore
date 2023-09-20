@@ -1,0 +1,6 @@
+# Ignore Practice_Sorting_M1 directory
+Practice_Sorting_M1/
+# Ignore rmv
+.rmv/
+# Ignore .vscode
+.vscode/
