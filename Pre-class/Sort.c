@@ -47,14 +47,12 @@ void insertionSort(int *arr, int size)
     for (int i = 1; i < size; i++)
     {
         int j = i - 1;
-        while (j >= 0)
+        int key = arr[i];
+        while (j >= 0 && arr[j]>key)
         {
-            if (arr[j] > arr[j + 1])
-            {
-                swap(&arr[j], &arr[j + 1]);
-                printf("current i = %d , j = %d : ", i, j);
-                displayArr(arr, size);
-            }
+            swap(&arr[j], &arr[j + 1]);
+            printf("current i = %d , j = %d : ", i, j);
+            displayArr(arr, size);
             j--;
         }
         printf("current i = %d , j = %d : ", i, j);

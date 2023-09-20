@@ -1,23 +1,33 @@
 import java.util.Scanner;
 class LinearSearch {
     public static void main(String[] args) {
-<<<<<<< HEAD
-        int[] arr = { 42, 18, 17, 29, 55, 63, 91, 14, 37, 68 };
+        int []arr = { 42, 18, 17, 29, 55, 63, 91, 14, 37, 68 };
         Scanner sc = new Scanner(System.in);
-        System.out.print("Input target: ");
-        int search_target = sc.nextInt();
-        int out = linearSearch(arr, search_target);
-=======
-        int[] arr = { 42, 18, 17, 55, 55, 63, 91, 14, 37, 68 };
-        int out = linearSearch(arr, 22);
->>>>>>> fccf8785b855cfd4c51dc85b93b91ed4f0db3e6f
-        System.out.println(out);
-        if(UniqueElement(arr)){
-            System.out.println("Unique Array.");
+        System.out.print("Input mode ( 1: modify input 2: search): ");
+        int mode = SelectMode();
+        if(mode == 1){
+          System.out.print("Enter input size: ");
+          int size = sc.nextInt();
+          int []array = new int[size];
+          for(int i = 0 ; i<size; i++)
+          {
+            System.out.print("Enter element "+(i+1)+" : ");
+            array[i] = sc.nextInt();
+          }
+          arr = array;
+          PrintArray(arr);
         }
-        else{
-            System.out.println("Not Unique Array.");
-        }
+          System.out.print("Input target: ");
+          int search_target = sc.nextInt();
+          int out = linearSearch(arr, search_target);
+          System.out.println(out);
+          PrintArray(arr);
+          if(UniqueElement(arr)){
+             System.out.println("Current input array is unique array.");
+          }
+          else{
+              System.out.println("Current input array is not unique array.");
+          }
     }
 
     private static int linearSearch(int[] arr, int n) {
@@ -25,12 +35,7 @@ class LinearSearch {
         int i = 0;
         boolean found = false;
         while (i < arr.length) {
-<<<<<<< HEAD
-            if (arr[i] - n == 0) {
-=======
             if (arr[i] == n  ) {
-                System.out.println("Target found!");
->>>>>>> fccf8785b855cfd4c51dc85b93b91ed4f0db3e6f
                 location = i;
                 found = true;
                 break;
@@ -61,4 +66,19 @@ class LinearSearch {
         }
         return true;
     }
+    public static void PrintArray(int[]arr){
+      System.out.print("Current input array : ");
+      for(int i = 0; i < arr.length; i++)
+      {
+        System.out.print(arr[i]+" ");
+      }
+      System.out.println("");
+    }
+    public static int SelectMode() 
+    {
+        Scanner sc = new Scanner(System.in);
+        int mode = sc.nextInt();
+        int selected_mode = (mode == 1) ? 1 : 0;
+        return selected_mode;
+    }  
 }
