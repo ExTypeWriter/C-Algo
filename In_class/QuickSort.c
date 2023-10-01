@@ -11,7 +11,7 @@ void swap(int* a, int* b)
 }
 
 // Partition the array using the last element as the pivot
-int partition(int arr[], int low, int high)
+int lomuto_partition(int arr[], int low, int high)
 {
 	// Choosing the pivot
 	int pivot = arr[high];
@@ -44,7 +44,7 @@ void quickSort(int arr[], int low, int high)
 
 		// pi is partitioning index, arr[p]
 		// is now at right place
-		int pi = partition(arr, low, high);
+		int pi = lomuto_partition(arr, low, high);
 
 		// Separately sort elements before
 		// partition and after partition
