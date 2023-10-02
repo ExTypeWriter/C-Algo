@@ -57,20 +57,8 @@ int quickselect(int arr[], int left, int right, int k_ind, int part_mode)
     }
     return OUT_OF_BOUND;
 }
-
-void flushInputBuffer();
-int checkValidInput(char*label , char *string)
-{
-    printf("%s",label);
-    scanf("%s", string);
-    while (!isInteger(string))
-    {
-        flushInputBuffer();
-        printf("Invalid input. Please enter integer : ");
-        scanf("%s", string);
-    }
-    return atoi(string);
-}
+void flushInputBuffer(); 
+int checkValidInput(char *label, char *string);
 void clearScreen();
 void enterToContinue();
 void delay(int seconds);
@@ -81,22 +69,28 @@ int main()
     int exit = 3;
     int arr[100];
     int original_arr[100];
-    int n = 0;
     int userChoice;
     char userInput[20];
     char modeInput[20];
     char selection[20];
 
     FILE *file = fopen("array.txt", "r");
-    if (file != NULL)
+    int n = 0;
+
+    if (file == NULL)
     {
-        // Read the array from the file
-        while (fscanf(file, "%d", &arr[n]) == 1)
-        {
-            n++;
-        }
-        fclose(file);
+        int array[] = {1, 4, 3, 5, 2, 6};
+        saveArrayToFile(array, sizeof(array) / sizeof(array[0]), "array.txt");
+        printf("Default array loaded\n");
+        file = fopen("array.txt", "r");
     }
+
+    // Read the array from the file
+    while (fscanf(file, "%d", &arr[n]) == 1)
+    {
+        n++;
+    }
+    fclose(file);
 
     do
     {
@@ -107,8 +101,8 @@ int main()
         printf("1. Edit array\n");
         printf("2. Show Kth Smallest\n");
         printf("3. Exit\n");
-        printf("----------------------------------------------------------------\n");        
-        userChoice = checkValidInput("Enter your choice: ",selection);
+        printf("----------------------------------------------------------------\n");
+        userChoice = checkValidInput("Enter your choice: ", selection);
 
         if (userChoice == edit_array)
         {
@@ -154,8 +148,8 @@ int main()
             printf("Current array: ");
             printArray(arr, n);
 
-            int k = checkValidInput("Enter Kth value: ",userInput);
-            
+            int k = checkValidInput("Enter Kth value: ", userInput);
+
             for (int i = 0; i < n; i++)
             {
                 original_arr[i] = arr[i];
@@ -186,14 +180,14 @@ int main()
     clearScreen();
     return 0;
 }
-
+// Swap two pointer.
 void swap(int *p_a, int *p_b)
 {
     int p_temp = *p_a;
     *p_a = *p_b;
     *p_b = p_temp;
 }
-
+// Print out array elements
 void printArray(int arr[], int size)
 {
     for (int i = 0; i < size; i++)
@@ -202,7 +196,7 @@ void printArray(int arr[], int size)
     }
     printf("\n");
 }
-
+// Save array elements to file.
 void saveArrayToFile(int arr[], int size, const char *filename)
 {
     FILE *file = fopen(filename, "w");
@@ -219,7 +213,7 @@ void saveArrayToFile(int arr[], int size, const char *filename)
 
     fclose(file);
 }
-
+// Check if str is integer or not.
 bool isInteger(char *str)
 {
     if (str == NULL || str[0] == '\0')
@@ -233,7 +227,7 @@ bool isInteger(char *str)
 
     return true;
 }
-
+// Clear terminal screen
 void clearScreen()
 {
 #ifdef _WIN32
@@ -242,14 +236,27 @@ void clearScreen()
     system("clear"); // For Linux / MacOS
 #endif
 }
-
+// Function to flush "\n" out of buffer.
 void flushInputBuffer()
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF)
         ;
 }
-
+// Check if input is integer then return the int form of the string.
+int checkValidInput(char *label, char *string)
+{
+    printf("%s", label);
+    scanf("%s", string);
+    while (!isInteger(string))
+    {
+        flushInputBuffer();
+        printf("Invalid input. Please enter integer : ");
+        scanf("%s", string);
+    }
+    return atoi(string);
+}
+// Enter to continue process.
 void enterToContinue()
 {
     printf("Press Enter to continue...");
