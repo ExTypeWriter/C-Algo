@@ -28,7 +28,15 @@ void bruteForcePermutations(char characters[], int n)
     // Generate permutations using brute-force
     for (i = 0; i < factorial; i++)
     {
-        printf("%s\n", characters);
+        for (int k = 0; k < n; k++)
+        {
+            if (k > 0)
+            {
+                printf(" "); // Add space between characters
+            }
+            printf("%c", characters[k]);
+        }
+        printf("\n");
         j = n - 2;
         while (j >= 0 && characters[j] >= characters[j + 1])
         {
@@ -64,8 +72,10 @@ void swapBool(bool *x, bool *y)
 }
 
 // Function to reverse a string from start to end
-void reverse(char str[], int start, int end) {
-    while (start < end) {
+void reverse(char str[], int start, int end)
+{
+    while (start < end)
+    {
         char temp = str[start];
         str[start] = str[end];
         str[end] = temp;
@@ -89,34 +99,48 @@ int findLargestMobile(char str[], bool direction[], int n)
 }
 
 // Function to generate and print all permutations using Johnson-Trotter's algorithm
-void johnsonTrotterPermutations(char characters[], int n) {
+void johnsonTrotterPermutations(char characters[], int n)
+{
     char permutation[n + 1];
     strcpy(permutation, characters);
 
     bool direction[n];
     memset(direction, true, sizeof(direction)); // All elements initially point to the right
 
-    printf("%s\n", permutation);
+    for (int k = 0; k < n; k++)
+    {
+        if (k > 0)
+        {
+            printf(" "); // Add space between characters
+        }
+        printf("%c", permutation[k]);
+    }
+    printf("\n");
 
-    while (true) {
+    while (true)
+    {
         int mobile = -1;
         int mobileIndex = -1;
 
         // Find the largest mobile element
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++)
+        {
             if ((direction[i] && i > 0 && permutation[i] > permutation[i - 1] && permutation[i] > mobile) ||
-                (!direction[i] && i < n - 1 && permutation[i] > permutation[i + 1] && permutation[i] > mobile)) {
+                (!direction[i] && i < n - 1 && permutation[i] > permutation[i + 1] && permutation[i] > mobile))
+            {
                 mobile = permutation[i];
                 mobileIndex = i;
             }
         }
 
-        if (mobile == -1) {
+        if (mobile == -1)
+        {
             break; // All permutations generated
         }
 
         // Swap the mobile element
-        if (direction[mobileIndex]) {
+        if (direction[mobileIndex])
+        {
             // Swap with the element to the left
             char temp = permutation[mobileIndex];
             permutation[mobileIndex] = permutation[mobileIndex - 1];
@@ -125,7 +149,9 @@ void johnsonTrotterPermutations(char characters[], int n) {
             bool tempDirection = direction[mobileIndex];
             direction[mobileIndex] = direction[mobileIndex - 1];
             direction[mobileIndex - 1] = tempDirection;
-        } else {
+        }
+        else
+        {
             // Swap with the element to the right
             char temp = permutation[mobileIndex];
             permutation[mobileIndex] = permutation[mobileIndex + 1];
@@ -137,13 +163,23 @@ void johnsonTrotterPermutations(char characters[], int n) {
         }
 
         // Reverse the directions of all elements greater than the mobile element
-        for (int i = 0; i < n; i++) {
-            if (permutation[i] > mobile) {
+        for (int i = 0; i < n; i++)
+        {
+            if (permutation[i] > mobile)
+            {
                 direction[i] = !direction[i];
             }
         }
 
-        printf("%s\n", permutation);
+        for (int k = 0; k < n; k++)
+        {
+            if (k > 0)
+            {
+                printf(" "); // Add space between characters
+            }
+            printf("%c", permutation[k]);
+        }
+        printf("\n");
     }
 }
 
@@ -171,15 +207,15 @@ int main()
     double elapsed_time_johnson = (end_time.tv_sec - start_time.tv_sec) * 1000.0 + (end_time.tv_nsec - start_time.tv_nsec) / 1e6;
     printf("Time taken by Johnson-Trotter: %f seconds\n", elapsed_time_johnson);
     double time_diff = elapsed_time_johnson - elapsed_time_brute;
-    if(time_diff > 0)
+    if (time_diff > 0)
     {
-        printf("Brute force took less time with time_diff = %f seconds\n",time_diff);
+        printf("Brute force took less time with time_diff = %f seconds\n", time_diff);
     }
-    else if(time_diff < 0)
+    else if (time_diff < 0)
     {
         printf("Brute force took more time with time_diff = %f seconds\", time_diff\n", abs(time_diff));
     }
-    else if(time_diff == 0)
+    else if (time_diff == 0)
     {
         printf("Brute force took as much time as Johnson trotter's algorithm took.\n");
     }
