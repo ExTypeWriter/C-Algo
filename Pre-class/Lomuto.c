@@ -12,50 +12,59 @@ void swap(int *p_a, int *p_b);
 void printArray(int arr[], int size);
 void saveArrayToFile(int arr[], int size, const char *filename);
 bool isInteger(char *str);
-int hoare_partition(int arr[], int left_most, int right_most);
-int lomuto_partition(int arr[], int left, int right)
-{
-    int pivot = arr[right];
+// Lomuto's partitioning
+int lomuto_partition(int arr[], int left, int right) {
+    int pivot = arr[left];
     int i = left;
 
-    for (int j = left; j < right; j++)
-    {
-        if (arr[j] <= pivot)
-        {
-            swap(&arr[i], &arr[j]);
+    for (int j = left + 1; j <= right; j++) {
+        if (arr[j] < pivot) {
             i++;
+            swap(&arr[i], &arr[j]);
         }
     }
-    swap(&arr[i], &arr[right]);
+
+    swap(&arr[left], &arr[i]);
     return i;
 }
+// Hoare's partitioning
+int hoare_partition(int arr[], int left, int right);
+// FInd Kth smallest
+int quickselect(int arr[], int left, int right, int k_ind, int part_mode) {
+    if (k_ind < 1 || k_ind > right + 1) {
+        return OUT_OF_BOUND;
+    }
 
-int quickselect(int arr[], int left, int right, int k_ind, int part_mode)
-{
-    if (left < right)
-    {
+    if (left < right) {
         int pivotIndex;
-        if (part_mode == LOMUTO_MODE)
-        {
+
+        if (part_mode == LOMUTO_MODE) {
             pivotIndex = lomuto_partition(arr, left, right);
-        }
-        else if (part_mode == HOARE_MODE)
-        {
+        } else if (part_mode == HOARE_MODE) {
             pivotIndex = hoare_partition(arr, left, right);
         }
 
-        if (pivotIndex == k_ind - 1)
+        if (pivotIndex == k_ind - 1) {
             return arr[pivotIndex];
+        }
 
-        if (pivotIndex < k_ind - 1)
+        if (pivotIndex < k_ind - 1) {
             return quickselect(arr, pivotIndex + 1, right, k_ind, part_mode);
+        }
 
-        if (k_ind == 1)
-            return arr[0];
+        if (k_ind == 1) {
+            return arr[left];
+        }
+
+        if (k_ind == (right + 1)) {
+            return arr[right];
+        }
 
         return quickselect(arr, left, pivotIndex - 1, k_ind, part_mode);
     }
-    return OUT_OF_BOUND;
+
+    // Handle the case when left == right
+    return arr[left];
 }
 void flushInputBuffer(); 
 int checkValidInput(char *label, char *string);
@@ -175,8 +184,8 @@ int main()
         }
     } while (userChoice != exit);
     clearScreen();
-    printf("Exit now...");
-    delay(1.2);
+    printf("Exit now...\n");
+    delay(1);
     clearScreen();
     return 0;
 }
@@ -274,26 +283,25 @@ void delay(int seconds)
         ;
 }
 
-int hoare_partition(int arr[], int left_most, int right_most)
+int hoare_partition(int arr[], int left, int right)
 {
-    int pivot = arr[left_most];
-    int i = left_most - 1;
-    int j = right_most + 1;
+    int pivot = arr[left];
+    int i = left - 1;
+    int j = right + 1;
 
-    do
-    {
-        do
-        {
+    while (1) {
+        do {
             i++;
         } while (arr[i] < pivot);
 
-        do
-        {
+        do {
             j--;
         } while (arr[j] > pivot);
+
+        if (i >= j) {
+            return j;
+        }
+
         swap(&arr[i], &arr[j]);
-    } while (i < j);
-    swap(&arr[i], &arr[j]);
-    swap(&arr[left_most], &arr[j]);
-    return j;
+    }
 }

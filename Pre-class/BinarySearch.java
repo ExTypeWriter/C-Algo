@@ -6,7 +6,7 @@ class BinarySearch
   {
     System.out.println("This is Binary Search in java ( not support duplicate target)");
     Scanner scan = new Scanner(System.in);
-    int []array = {1,4,2,9,10};
+    int []array = {1,3,4,2,9,10};
     System.out.print("Currnet Array : ");
     printArray(array);
     System.out.print("Input target : ");
@@ -59,7 +59,7 @@ class BinarySearch
   {
     int pivot = A[left];
     int s = left;
-    for(int i = left + 1; i <= right;  i++ )
+    for(int i = left + 1; i < right;  i++ )
     {
       if(A[i] < pivot)
       {
@@ -70,19 +70,15 @@ class BinarySearch
     return s;
   }
   public static int QuickSelectSmallest(int[] A, int left, int right, int K) 
-  {
-    if (left == right) {
-        return A[left];
-    }
-    
+  { 
     int pivotIndex = Lomu_part(A, left, right);
     
-    if (K == pivotIndex) {
+    if (pivotIndex == K -1) {
         return A[pivotIndex];
-    } else if (K < pivotIndex) {
-        return QuickSelectSmallest(A, left, pivotIndex, K); // Adjust pivotIndex here
+    } else if (pivotIndex > left+K-1) {
+        return QuickSelectSmallest(A, left, pivotIndex-1, K); // Adjust pivotIndex here
     } else {
-        return QuickSelectSmallest(A, pivotIndex + 1, right, K);
+        return QuickSelectSmallest(A, pivotIndex + 1, right, K-1-pivotIndex);
     }
   }
 

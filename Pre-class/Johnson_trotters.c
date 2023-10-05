@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
-
+#include <math.h>
 // Function to swap two characters
 void swap(char *x, char *y)
 {
