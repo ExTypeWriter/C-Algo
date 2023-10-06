@@ -6,7 +6,8 @@
     "files.associations": {
         "**/.rmv/config/*.json": "jsonc",
         "string.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "lab_4_kth_smallest": "c"
     },
     "files.exclude": {
         "**/.git": true,

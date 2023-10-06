@@ -206,14 +206,16 @@ int main()
     clock_gettime(CLOCK_MONOTONIC, &end_time);
     double elapsed_time_johnson = (end_time.tv_sec - start_time.tv_sec) * 1000.0 + (end_time.tv_nsec - start_time.tv_nsec) / 1e6;
     printf("Time taken by Johnson-Trotter: %f seconds\n", elapsed_time_johnson);
-    double time_diff = elapsed_time_johnson - elapsed_time_brute;
+    double time_diff = elapsed_time_brute - elapsed_time_johnson;
+    printf("\n");
     if (time_diff > 0)
     {
-        printf("Brute force took less time with time_diff = %f seconds\n", time_diff);
+        printf("Brute force took more time for %f seconds\n", time_diff);
     }
     else if (time_diff < 0)
     {
-        printf("Brute force took more time with time_diff = %f seconds\", time_diff\n", abs(time_diff));
+        time_diff *= -1;
+        printf("Brute force took less time for %f seconds\n", time_diff);
     }
     else if (time_diff == 0)
     {

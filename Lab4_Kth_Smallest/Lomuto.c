@@ -7,18 +7,29 @@
 #define OUT_OF_BOUND -1
 #define LOMUTO_MODE -2
 #define HOARE_MODE -3
+#define RESET "\x1B[0m"
+#define LIME "\x1b[38;2;57;255;20m"
+#define NEON_LAV "\x1b[38;2;234;157;255m"
+#define NEON_YEL "\x1b[38;2;250;237;39m"
+#define NEON_ORG "\x1b[38;2;255;95;31m"
+#define NEON_CYAN "\x1b[38;2;0;254;252m"
+#define ERROR "\x1b[38;2;237;67;55m"
+#define EXIT_RED "\x1b[38;2;218;98;125m"
 
 void swap(int *p_a, int *p_b);
 void printArray(int arr[], int size);
 void saveArrayToFile(int arr[], int size, const char *filename);
 bool isInteger(char *str);
 // Lomuto's partitioning
-int lomuto_partition(int arr[], int left, int right) {
+int lomuto_partition(int arr[], int left, int right)
+{
     int pivot = arr[left];
     int i = left;
 
-    for (int j = left + 1; j <= right; j++) {
-        if (arr[j] < pivot) {
+    for (int j = left + 1; j <= right; j++)
+    {
+        if (arr[j] < pivot)
+        {
             i++;
             swap(&arr[i], &arr[j]);
         }
@@ -30,43 +41,57 @@ int lomuto_partition(int arr[], int left, int right) {
 // Hoare's partitioning
 int hoare_partition(int arr[], int left, int right);
 // FInd Kth smallest
-int quickselect(int arr[], int left, int right, int k_ind, int part_mode) {
-    if (k_ind < 1 || k_ind > right + 1) {
+int quickselect(int arr[], int left, int right, int k_ind, int part_mode, int actual_size)
+{
+    if (k_ind > actual_size || k_ind < 1)
+    {
         return OUT_OF_BOUND;
     }
+    if (left == right)
+    {
+        return arr[left];
+    }
 
-    if (left < right) {
-        int pivotIndex;
+    int pivotIndex;
 
-        if (part_mode == LOMUTO_MODE) {
-            pivotIndex = lomuto_partition(arr, left, right);
-        } else if (part_mode == HOARE_MODE) {
-            pivotIndex = hoare_partition(arr, left, right);
-        }
+    if (part_mode == LOMUTO_MODE)
+    {
+        pivotIndex = lomuto_partition(arr, left, right);
+    }
+    else if (part_mode == HOARE_MODE)
+    {
+        pivotIndex = hoare_partition(arr, left, right);
 
-        if (pivotIndex == k_ind - 1) {
+        if (pivotIndex == k_ind - 1)
+        {
             return arr[pivotIndex];
         }
 
-        if (pivotIndex < k_ind - 1) {
-            return quickselect(arr, pivotIndex + 1, right, k_ind, part_mode);
+        if (pivotIndex < k_ind - 1)
+        {
+            return quickselect(arr, pivotIndex + 1, right, k_ind, part_mode,actual_size);
         }
 
-        if (k_ind == 1) {
-            return arr[left];
-        }
-
-        if (k_ind == (right + 1)) {
-            return arr[right];
-        }
-
-        return quickselect(arr, left, pivotIndex - 1, k_ind, part_mode);
+        return quickselect(arr, left, pivotIndex - 1, k_ind, part_mode,actual_size);
     }
 
-    // Handle the case when left == right
-    return arr[left];
+    int pivotRank = pivotIndex - left + 1;
+
+    if (k_ind == pivotRank)
+    {
+        return arr[pivotIndex];
+    }
+    else if (k_ind < pivotRank)
+    {
+        return quickselect(arr, left, pivotIndex - 1, k_ind, part_mode,actual_size);
+    }
+    else
+    {
+        return quickselect(arr, pivotIndex + 1, right, k_ind - pivotRank, part_mode,actual_size);
+    }
 }
-void flushInputBuffer(); 
+
+void flushInputBuffer();
 int checkValidInput(char *label, char *string);
 void clearScreen();
 void enterToContinue();
@@ -86,11 +111,11 @@ int main()
     FILE *file = fopen("array.txt", "r");
     int n = 0;
 
-    if (file == NULL)
+    if (file == NULL || fscanf(file, "%d", &arr[n]) != 1)
     {
         int array[] = {1, 4, 3, 5, 2, 6};
         saveArrayToFile(array, sizeof(array) / sizeof(array[0]), "array.txt");
-        printf("Default array loaded\n");
+        printf(NEON_YEL"Default array loaded\n"RESET);
         file = fopen("array.txt", "r");
     }
 
@@ -104,30 +129,30 @@ int main()
     do
     {
         printf("----------------------------------------------------------------\n");
-        printf("Current array: ");
+        printf(NEON_LAV "Current array: " RESET);
         printArray(arr, n);
-        printf("Menu:\n");
-        printf("1. Edit array\n");
-        printf("2. Show Kth Smallest\n");
-        printf("3. Exit\n");
+        printf(LIME "Menu:\n" RESET);
+        printf(NEON_YEL "1. Edit array\n");
+        printf("2. Show Kth Smallest\n" RESET);
+        printf(EXIT_RED "3. Exit\n" RESET);
         printf("----------------------------------------------------------------\n");
-        userChoice = checkValidInput("Enter your choice: ", selection);
+        userChoice = checkValidInput(NEON_CYAN "Enter your choice: " RESET, selection);
 
         if (userChoice == edit_array)
         {
             int new_n = 0;
-            printf("Enter number of elements in the new array: ");
+            printf(NEON_CYAN "Enter number of elements in the new array: " RESET);
             if (scanf("%d", &new_n) == 1 && new_n >= 0 && new_n <= 100)
             {
                 n = new_n;
-                printf("Enter new values for the array:\n");
+                printf(NEON_ORG "Enter new values for the array:\n");
                 for (int i = 0; i < n; i++)
                 {
-                    printf("Enter value for element %d: ", i + 1);
+                    printf(NEON_YEL "Enter value for element %d: ", i + 1);
                     scanf("%s", userInput);
                     while (!isInteger(userInput) || atoi(userInput) <= 0)
                     {
-                        printf("Invalid input. Please enter a positive integer: ");
+                        printf(ERROR"Invalid input. Please enter a positive integer: "RESET);
                         scanf("%s", userInput);
                     }
 
@@ -137,14 +162,14 @@ int main()
             }
             else
             {
-                printf("Invalid number of elements. Please enter a non-negative integer between 0 and 100.\n");
+                printf(ERROR"Invalid number of elements. Please enter a non-negative integer between 0 and 100.\n"RESET);
             }
             clearScreen();
         }
         else if (userChoice == show_kth_smallest)
         {
             int mode;
-            printf("Enter partition mode (Lomuto -> -2 or Hoare -> -3): ");
+            printf(NEON_ORG "Enter partition mode (Lomuto -> -2 or Hoare -> -3): " RESET);
             scanf("%s", modeInput);
             while (atoi(modeInput) != LOMUTO_MODE && atoi(modeInput) != HOARE_MODE)
             {
@@ -157,7 +182,7 @@ int main()
             printf("Current array: ");
             printArray(arr, n);
 
-            int k = checkValidInput("Enter Kth value: ", userInput);
+            int k = checkValidInput(NEON_CYAN "Enter Kth value: " RESET, userInput);
 
             for (int i = 0; i < n; i++)
             {
@@ -167,7 +192,7 @@ int main()
             // Start timer
             struct timespec start_time, end_time;
             clock_gettime(CLOCK_MONOTONIC, &start_time);
-            int result = quickselect(original_arr, 0, n - 1, k, mode);
+            int result = quickselect(original_arr, 0, n - 1, k, mode , n);
             // Stop timer
             clock_gettime(CLOCK_MONOTONIC, &end_time);
             double elapsed_time = (end_time.tv_sec - start_time.tv_sec) * 1000.0 + (end_time.tv_nsec - start_time.tv_nsec) / 1e6;
@@ -177,14 +202,14 @@ int main()
             }
             else
             {
-                printf("The k input is out of bound no element returned.\n");
+                printf(NEON_YEL "The k input is out of bound no element returned.\n" RESET);
             }
-            printf("Finished in %lf s\n", elapsed_time);
+            printf(LIME "Finished in %lf s\n" RESET, elapsed_time);
             enterToContinue();
         }
     } while (userChoice != exit);
     clearScreen();
-    printf("Exit now...\n");
+    printf(NEON_YEL "Exit now...\n" RESET);
     delay(1);
     clearScreen();
     return 0;
@@ -260,7 +285,7 @@ int checkValidInput(char *label, char *string)
     while (!isInteger(string))
     {
         flushInputBuffer();
-        printf("Invalid input. Please enter integer : ");
+        printf(ERROR"Invalid input. Please enter integer : "RESET);
         scanf("%s", string);
     }
     return atoi(string);
@@ -268,7 +293,7 @@ int checkValidInput(char *label, char *string)
 // Enter to continue process.
 void enterToContinue()
 {
-    printf("Press Enter to continue...");
+    printf(NEON_YEL "Press Enter to continue..." RESET);
     flushInputBuffer();
     int c;
     while ((c = getchar()) != '\n' && c != EOF)
@@ -289,17 +314,21 @@ int hoare_partition(int arr[], int left, int right)
     int i = left - 1;
     int j = right + 1;
 
-    while (1) {
-        do {
+    while (1)
+    {
+        do
+        {
             i++;
         } while (arr[i] < pivot);
 
-        do {
+        do
+        {
             j--;
         } while (arr[j] > pivot);
 
-        if (i >= j) {
-            return j;
+        if (i >= j)
+        {
+            return j; // Return the pivot index
         }
 
         swap(&arr[i], &arr[j]);
