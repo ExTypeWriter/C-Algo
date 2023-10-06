@@ -5,6 +5,12 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <math.h>
+#define FINISH_JOHN "\x1b[38;2;69;241;194m"
+#define FINISH_BRUTE "\x1b[38;2;252;161;125m"
+#define NEON_YEL "\x1b[38;2;250;237;39m"
+#define NEON_CYAN "\x1b[38;2;0;254;252m"
+#define RESET "\x1B[0m"
+
 // Function to swap two characters
 void swap(char *x, char *y)
 {
@@ -188,24 +194,24 @@ int main()
     char input[100];
     char input_2[100];
     struct timespec start_time, end_time;
-    printf("Enter characters (e.g., ABC): ");
+    printf(NEON_CYAN"Enter characters (e.g., ABC): "RESET);
     scanf("%s", input);
     strcpy(input_2, input);
     int n = strlen(input);
 
-    printf("Brute-Force Permutations:\n");
+    printf(NEON_YEL"Brute-Force Permutations:\n"RESET);
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     bruteForcePermutations(input, n);
     clock_gettime(CLOCK_MONOTONIC, &end_time);
     double elapsed_time_brute = (end_time.tv_sec - start_time.tv_sec) * 1000.0 + (end_time.tv_nsec - start_time.tv_nsec) / 1e6;
-    printf("Time taken by Brute-Force: %f seconds\n", elapsed_time_brute);
+    printf(FINISH_BRUTE"Time taken by Brute-Force: %f seconds\n"RESET, elapsed_time_brute);
 
-    printf("\nJohnson-Trotter Permutations:\n");
+    printf(NEON_YEL"\nJohnson-Trotter Permutations:\n"RESET);
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     johnsonTrotterPermutations(input_2, n);
     clock_gettime(CLOCK_MONOTONIC, &end_time);
     double elapsed_time_johnson = (end_time.tv_sec - start_time.tv_sec) * 1000.0 + (end_time.tv_nsec - start_time.tv_nsec) / 1e6;
-    printf("Time taken by Johnson-Trotter: %f seconds\n", elapsed_time_johnson);
+    printf(FINISH_JOHN"Time taken by Johnson-Trotter: %f seconds\n"RESET, elapsed_time_johnson);
     double time_diff = elapsed_time_brute - elapsed_time_johnson;
     printf("\n");
     if (time_diff > 0)
