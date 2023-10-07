@@ -12,12 +12,11 @@
 #define RESET "\x1B[0m"
 
 // Function to swap two characters
-void swap(char *x, char *y)
-{
-    char temp = *x;
-    *x = *y;
-    *y = temp;
-}
+void swap(char *x, char *y);
+// Function to swap two boolean values
+void swapBool(bool *x, bool *y);
+// Function to reverse a string from start to end
+void reverse(char str[], int start, int end);
 
 // Function to generate permutations using the brute-force method
 void bruteForcePermutations(char characters[], int n)
@@ -69,26 +68,7 @@ void bruteForcePermutations(char characters[], int n)
     }
 }
 
-// Function to swap two boolean values
-void swapBool(bool *x, bool *y)
-{
-    bool temp = *x;
-    *x = *y;
-    *y = temp;
-}
 
-// Function to reverse a string from start to end
-void reverse(char str[], int start, int end)
-{
-    while (start < end)
-    {
-        char temp = str[start];
-        str[start] = str[end];
-        str[end] = temp;
-        start++;
-        end--;
-    }
-}
 // Function to find the largest mobile element in a string
 int findLargestMobile(char str[], bool direction[], int n)
 {
@@ -228,4 +208,30 @@ int main()
         printf("Brute force took as much time as Johnson trotter's algorithm took.\n");
     }
     return 0;
+}
+
+void swap(char *x, char *y)
+{
+    char temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void swapBool(bool *x, bool *y)
+{
+    bool temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void reverse(char str[], int start, int end)
+{
+    while (start < end)
+    {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
 }
