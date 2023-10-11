@@ -37,7 +37,7 @@ void bruteForcePermutations(char characters[], int n)
         {
             if (k > 0)
             {
-                printf(" "); // Add space between characters
+                printf(" "); 
             }
             printf("%c", characters[k]);
         }
@@ -49,7 +49,7 @@ void bruteForcePermutations(char characters[], int n)
         }
         if (j == -1)
         {
-            break; // All permutations generated
+            break; 
         }
         int k = n - 1;
         while (characters[j] >= characters[k])
@@ -91,13 +91,13 @@ void johnsonTrotterPermutations(char characters[], int n)
     strcpy(permutation, characters);
 
     bool direction[n];
-    memset(direction, true, sizeof(direction)); // All elements initially point to the right
+    memset(direction, true, sizeof(direction)); 
 
     for (int k = 0; k < n; k++)
     {
         if (k > 0)
         {
-            printf(" "); // Add space between characters
+            printf(" ");
         }
         printf("%c", permutation[k]);
     }
@@ -121,7 +121,7 @@ void johnsonTrotterPermutations(char characters[], int n)
 
         if (mobile == -1)
         {
-            break; // All permutations generated
+            break;
         }
 
         // Swap the mobile element
