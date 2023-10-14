@@ -1,49 +1,81 @@
 #include <stdio.h>
-#include <limits.h>
+#include <stdlib.h>
 
-int min(int a, int b) {
-    return (a < b) ? a : b;
+typedef struct{
+    int value;
+    int amount;
+}Coin;
+
+void printCombination(Coin coins[], int numCoins) {
+    for (int i = 0; i < numCoins; i++) {
+        printf("%d: %d\n", coins[i].value, coins[i].amount);
+    }
+    printf("\n");
 }
 
-void findMinCoins(int amount) {
-    int coins[] = {10, 5, 2, 1}; // Coin denominations in descending order
-    int n = sizeof(coins) / sizeof(coins[0]);
-    
-    int dp[amount + 1];
-    int usedCoins[amount + 1];
-    
-    dp[0] = 0;
-    for (int i = 1; i <= amount; i++) {
-        dp[i] = INT_MAX;
-        for (int j = 0; j < n; j++) {
-            if (i >= coins[j] && 1 + dp[i - coins[j]] < dp[i]) {
-                dp[i] = 1 + dp[i - coins[j]];
-                usedCoins[i] = coins[j];
+int calculateTotalValue(Coin coins[], int numCoins) {
+    int totalValue = 0;
+    for (int i = 0; i < numCoins; i++) {
+        totalValue += coins[i].value * coins[i].amount;
+    }
+    return totalValue;
+}
+
+void findCombinations(Coin coins[], int numCoins, int target, Coin bestSolution[], int* bestValue, int* bestAmount, int currentCoin, int currentAmount) {
+    if (currentAmount == target) {
+        int totalValue = calculateTotalValue(coins, numCoins);
+        int totalAmount = 0;
+        for (int i = 0; i < numCoins; i++) {
+            totalAmount += coins[i].amount;
+        }
+        if (totalValue > *bestValue || (totalValue == *bestValue && totalAmount < *bestAmount)) {
+            *bestValue = totalValue;
+            *bestAmount = totalAmount;
+            for (int i = 0; i < numCoins; i++) {
+                bestSolution[i] = coins[i];
             }
         }
+        // printCombination(coins, numCoins); // Print the current combination
+        return;
     }
-
-    if (dp[amount] == INT_MAX) {
-        printf("No solution exists.\n");
+    if (currentCoin == numCoins) {
         return;
     }
 
-    printf("Minimum number of coins required: %d\n", dp[amount]);
-    printf("Coins used:\n");
-    while (amount > 0) {
-        int coin = usedCoins[amount];
-        int count = amount / coin;
-        printf("%d x %d\n", coin, count);
-        amount -= coin * count;
+    for (int i = 0; i * coins[currentCoin].value + currentAmount <= target; i++) {
+        coins[currentCoin].amount = i;
+        findCombinations(coins, numCoins, target, bestSolution, bestValue, bestAmount, currentCoin + 1, currentAmount + i * coins[currentCoin].value);
+        coins[currentCoin].amount = 0;
     }
 }
 
 int main() {
-    int amount;
-    printf("Enter the desired amount: ");
-    scanf("%d", &amount);
-    
-    findMinCoins(amount);
-    
+    int target;
+    // printf("Enter the target amount: ");
+    scanf("%d", &target);
+
+    int numCoins;
+    // printf("Enter the number of coin types: ");
+    scanf("%d", &numCoins);
+
+    Coin coins[numCoins];
+
+    for (int i = 0; i < numCoins; i++) {
+        // printf("Enter the value of coin %d: ", i + 1);
+        scanf("%d", &coins[i].value);
+        coins[i].amount = 0;
+    }
+
+    Coin bestSolution[numCoins];
+    int bestValue = 0;
+    int bestAmount = target + 1;
+
+    // printf("All Possible Solutions:\n");
+    findCombinations(coins, numCoins, target, bestSolution, &bestValue, &bestAmount, 0, 0);
+
+    // printf("Best Solution: \n");
+    printCombination(bestSolution, numCoins);
+    // printf("Total Coin used: %d coins\n",bestAmount);
+
     return 0;
 }
