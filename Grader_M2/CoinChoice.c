@@ -1,81 +1,59 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <limits.h>
 
-typedef struct{
-    int value;
-    int amount;
-}Coin;
-
-void printCombination(Coin coins[], int numCoins) {
-    for (int i = 0; i < numCoins; i++) {
-        printf("%d: %d\n", coins[i].value, coins[i].amount);
-    }
-    printf("\n");
-}
-
-int calculateTotalValue(Coin coins[], int numCoins) {
-    int totalValue = 0;
-    for (int i = 0; i < numCoins; i++) {
-        totalValue += coins[i].value * coins[i].amount;
-    }
-    return totalValue;
-}
-
-void findCombinations(Coin coins[], int numCoins, int target, Coin bestSolution[], int* bestValue, int* bestAmount, int currentCoin, int currentAmount) {
-    if (currentAmount == target) {
-        int totalValue = calculateTotalValue(coins, numCoins);
-        int totalAmount = 0;
+void CoinChange(int coins[], int numCoins, int amount, int current[], int currentIndex, int *lowestCount, int *highestCoin, int *bestCombination) {
+    if (amount == 0) {
+        int totalCoins = 0;
+        int highestValueCoin = 0;
         for (int i = 0; i < numCoins; i++) {
-            totalAmount += coins[i].amount;
-        }
-        if (totalValue > *bestValue || (totalValue == *bestValue && totalAmount < *bestAmount)) {
-            *bestValue = totalValue;
-            *bestAmount = totalAmount;
-            for (int i = 0; i < numCoins; i++) {
-                bestSolution[i] = coins[i];
+            totalCoins += current[i];
+            if (current[i] > 0 && coins[i] > highestValueCoin) {
+                highestValueCoin = coins[i];
             }
         }
-        // printCombination(coins, numCoins); // Print the current combination
-        return;
-    }
-    if (currentCoin == numCoins) {
+
+        if (totalCoins < *lowestCount || (totalCoins == *lowestCount && highestValueCoin > *highestCoin)) {
+            *lowestCount = totalCoins;
+            *highestCoin = highestValueCoin;
+            for (int i = 0; i < numCoins; i++) {
+                bestCombination[i] = current[i];
+            }
+        }
+
         return;
     }
 
-    for (int i = 0; i * coins[currentCoin].value + currentAmount <= target; i++) {
-        coins[currentCoin].amount = i;
-        findCombinations(coins, numCoins, target, bestSolution, bestValue, bestAmount, currentCoin + 1, currentAmount + i * coins[currentCoin].value);
-        coins[currentCoin].amount = 0;
+    if (currentIndex == numCoins) {
+        return;
+    }
+
+    for (int i = 0; i <= amount / coins[currentIndex]; i++) {
+        current[currentIndex] = i;
+        CoinChange(coins, numCoins, amount - i * coins[currentIndex], current, currentIndex + 1, lowestCount, highestCoin, bestCombination);
     }
 }
 
 int main() {
-    int target;
-    // printf("Enter the target amount: ");
-    scanf("%d", &target);
-
-    int numCoins;
-    // printf("Enter the number of coin types: ");
+    int target_value, numCoins;
+    scanf("%d", &target_value);
     scanf("%d", &numCoins);
-
-    Coin coins[numCoins];
-
-    for (int i = 0; i < numCoins; i++) {
-        // printf("Enter the value of coin %d: ", i + 1);
-        scanf("%d", &coins[i].value);
-        coins[i].amount = 0;
+    int coins[numCoins];
+    for (int k = 0; k < numCoins; k++) {
+        scanf("%d", &coins[k]);
     }
 
-    Coin bestSolution[numCoins];
-    int bestValue = 0;
-    int bestAmount = target + 1;
+    int current[numCoins];
+    for (int i = 0; i < numCoins; i++) {
+        current[i] = 0;
+    }
 
-    // printf("All Possible Solutions:\n");
-    findCombinations(coins, numCoins, target, bestSolution, &bestValue, &bestAmount, 0, 0);
-
-    // printf("Best Solution: \n");
-    printCombination(bestSolution, numCoins);
-    // printf("Total Coin used: %d coins\n",bestAmount);
-
+    int lowestCount = INT_MAX;
+    int highestCoin = 0;
+    int bestCombination[numCoins];
+    
+    CoinChange(coins, numCoins, target_value, current, 0, &lowestCount, &highestCoin, bestCombination);
+    for (int i = 0; i < numCoins; i++) {
+        printf("%d: %d\n", coins[i], bestCombination[i]);
+    }
     return 0;
 }
