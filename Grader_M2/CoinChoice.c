@@ -1,59 +1,72 @@
 #include <stdio.h>
-#include <limits.h>
 
-void CoinChange(int coins[], int numCoins, int amount, int current[], int currentIndex, int *lowestCount, int *highestCoin, int *bestCombination) {
-    if (amount == 0) {
-        int totalCoins = 0;
-        int highestValueCoin = 0;
-        for (int i = 0; i < numCoins; i++) {
-            totalCoins += current[i];
-            if (current[i] > 0 && coins[i] > highestValueCoin) {
-                highestValueCoin = coins[i];
-            }
-        }
+// Define Coin struct
+typedef struct
+{
+    int value; // Value of coin 
+    int amount; // Amount of coin to contribute change
+} Coin;
 
-        if (totalCoins < *lowestCount || (totalCoins == *lowestCount && highestValueCoin > *highestCoin)) {
-            *lowestCount = totalCoins;
-            *highestCoin = highestValueCoin;
-            for (int i = 0; i < numCoins; i++) {
-                bestCombination[i] = current[i];
-            }
-        }
-
-        return;
+// Print coin usage for each coin type.
+void PrintCoinUsage(Coin *coin_array, int M) 
+{
+    for (int j = 0; j < M; j++)
+    {
+        printf("%d: %d\n", coin_array[j].value, coin_array[j].amount);
+    }
+}
+// Find coin used in each type.
+void MinCoinChange(Coin *coin_array,int N , int M) 
+{
+    // Init 0 to all element in coin array.
+    for (int i = 0; i < M; i++)
+    {
+        scanf("%d", &coin_array[i].value);
+        coin_array[i].amount = 0;
     }
 
-    if (currentIndex == numCoins) {
-        return;
+    int table[N + 1];
+    table[0] = 0;  
+
+    // Generate table.
+    for (int i = 1; i <= N; i++)
+    {
+        table[i] = N + 1;
+
+        for (int j = 0; j < M; j++)
+        {
+            if (coin_array[j].value <= i && table[i - coin_array[j].value] + 1 < table[i])
+            {
+                table[i] = table[i - coin_array[j].value] + 1;
+            }
+        }
     }
 
-    for (int i = 0; i <= amount / coins[currentIndex]; i++) {
-        current[currentIndex] = i;
-        CoinChange(coins, numCoins, amount - i * coins[currentIndex], current, currentIndex + 1, lowestCount, highestCoin, bestCombination);
+    // Backtrack to find the used coins.
+    int amount = N;
+    for (int j = M - 1; j >= 0; j--)
+    {
+        while (amount >= coin_array[j].value && table[amount] == table[amount - coin_array[j].value] + 1)
+        {
+            coin_array[j].amount++;
+            amount -= coin_array[j].value;
+        }
     }
 }
 
-int main() {
-    int target_value, numCoins;
-    scanf("%d", &target_value);
-    scanf("%d", &numCoins);
-    int coins[numCoins];
-    for (int k = 0; k < numCoins; k++) {
-        scanf("%d", &coins[k]);
-    }
+int main()
+{
+    int TotalChange;
+    scanf("%d", &TotalChange);
 
-    int current[numCoins];
-    for (int i = 0; i < numCoins; i++) {
-        current[i] = 0;
-    }
+    int CoinTypeCount;
+    scanf("%d", &CoinTypeCount);
 
-    int lowestCount = INT_MAX;
-    int highestCoin = 0;
-    int bestCombination[numCoins];
-    
-    CoinChange(coins, numCoins, target_value, current, 0, &lowestCount, &highestCoin, bestCombination);
-    for (int i = 0; i < numCoins; i++) {
-        printf("%d: %d\n", coins[i], bestCombination[i]);
-    }
+    Coin coins[CoinTypeCount]; 
+
+    MinCoinChange(coins, TotalChange ,CoinTypeCount);
+
+    PrintCoinUsage(coins, CoinTypeCount);
+
     return 0;
 }
