@@ -1,0 +1,20 @@
+Run 1 - Execution time: 320.555 milliseconds, CPU usage: 0.00002%, Memory usage: 12952 KB
+----------------------------------------
+Run 2 - Execution time: 272.441 milliseconds, CPU usage: 0.00041%, Memory usage: 12952 KB
+----------------------------------------
+Run 3 - Execution time: 270.784 milliseconds, CPU usage: 0.00034%, Memory usage: 12952 KB
+----------------------------------------
+Run 4 - Execution time: 266.199 milliseconds, CPU usage: 0.00012%, Memory usage: 12952 KB
+----------------------------------------
+Run 5 - Execution time: 286.910 milliseconds, CPU usage: 0.00277%, Memory usage: 12952 KB
+----------------------------------------
+Run 6 - Execution time: 266.403 milliseconds, CPU usage: 0.00071%, Memory usage: 12952 KB
+----------------------------------------
+Run 7 - Execution time: 280.844 milliseconds, CPU usage: 0.00099%, Memory usage: 12952 KB
+----------------------------------------
+Run 8 - Execution time: 310.623 milliseconds, CPU usage: 0.00188%, Memory usage: 12952 KB
+----------------------------------------
+Run 9 - Execution time: 282.972 milliseconds, CPU usage: 0.00153%, Memory usage: 12952 KB
+----------------------------------------
+Run 10 - Execution time: 275.524 milliseconds, CPU usage: 0.00143%, Memory usage: 12952 KB
+----------------------------------------

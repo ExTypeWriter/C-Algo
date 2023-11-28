@@ -23,14 +23,14 @@ Blink='\033[5m'
 input_file="test_int.txt"
 
 # Compile the C code
-gcc -o sort_test MergeSort.c
+gcc -o sort_test QuickSort.c
 
 # Check if compilation was successful
 if [ $? -eq 0 ]; then
     echo -e "${Green}Compilation successful${Color_Off}"
 
     # Create a text file to store the results
-    result_file="results_merge.txt"
+    result_file="result.txt"
     rm -f "$result_file"  # Remove existing file if it exists
 
     total_execution_time=0 

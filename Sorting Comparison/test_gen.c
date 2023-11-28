@@ -1,100 +1,184 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
-void writeRandNum(FILE *file, int lower, int upper, int number_of_element, int number_of_arr) {
-    fprintf(file,"%d\n", number_of_element);
-    int j = 0;
-    while (j < number_of_element) {
+
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int HoarePartition(int arr[], int left_most, int right_most)
+{
+    int pivot = arr[left_most];
+    int i = left_most - 1;
+    int j = right_most + 1;
+
+    do
+    {
+        do
+        {
+            i++;
+        } while (arr[i] < pivot);
+
+        do
+        {
+            j--;
+        } while (arr[j] > pivot);
+        swap(&arr[i], &arr[j]);
+    } while (i < j);
+    swap(&arr[i], &arr[j]);
+    swap(&arr[left_most], &arr[j]);
+    return j;
+}
+
+void quickSort(int arr[], int left_most, int right_most)
+{
+    if (left_most < right_most)
+    {
+        int partitionIndex = HoarePartition(arr, left_most, right_most);
+        quickSort(arr, left_most, partitionIndex);
+        quickSort(arr, partitionIndex + 1, right_most);
+    }
+}
+
+void writeRandNum(FILE *file, int lower, int upper, int number_of_element, char *mode)
+{
+    fprintf(file, "%d\n", number_of_element);
+    if (strcmp(mode, "A") == 0)
+    {
+        int start_num = (rand() % (upper - lower + 1)) + lower;
+        for (int i = 0; i < number_of_element; i++)
+        {
+            fprintf(file, "%d\n", start_num + i);
+        }
+    }
+    else if (strcmp(mode, "B") == 0)
+    {
+        int start_num = (rand() % (upper - lower + 1)) + lower;
+        for (int i = number_of_element; i > 0; i--)
+        {
+            fprintf(file, "%d\n", start_num + i);
+        }
+    }
+    else if (strcmp(mode, "C") == 0)
+    {
+        // Mode C: Random without duplicates
+        if (number_of_element > (upper - lower + 1))
+        {
+            return;
+        }
+
+        bool *used = malloc((upper - lower + 1) * sizeof(bool));
+        if (used == NULL)
+        {
+            return;
+        }
+
+        // Initialize the used array to false
+        for (int i = 0; i <= upper - lower; i++)
+        {
+            used[i] = false;
+        }
+
+        // Generate unique random numbers
+        for (int j = 0; j < number_of_element; j++)
+        {
+            int num;
+            do
+            {
+                num = (rand() % (upper - lower + 1)) + lower;
+            } while (used[num - lower]);
+
+            fprintf(file, "%d\n", num);
+            used[num - lower] = true;
+        }
+    }
+    else if (strcmp(mode, "D") == 0)
+    {
+        // Mode D: Random with duplicates
+        for (int j = 0; j < number_of_element; j++)
+        {
+            int num = (rand() % (upper - lower + 1)) + lower;
+            fprintf(file, "%d\n", num);
+        }
+    }
+    else if (strcmp(mode, "E") == 0)
+    {
+        // Mode E: All duplicates
         int num = (rand() % (upper - lower + 1)) + lower;
-        fprintf(file, "%d\n", num);
-        j++;
-    }
-}
-
-void writeRandChar(FILE *file, int number_of_element, int number_of_arr) {
-    int i = 0;
-    while (i < number_of_arr) {
-        int j = 0;
-        while (j < number_of_element) {
-            char c = 'A' + rand() % 26; // Generates a random uppercase letter
-            fprintf(file, "%c ", c);
-            j++;
+        for (int j = 0; j < number_of_element; j++)
+        {
+            fprintf(file, "%d\n", num);
         }
-        fprintf(file, "\n");
-        i++;
     }
-}
-
-void writeRandString(FILE *file, int string_length, int number_of_arr) {
-    int i = 0;
-    while (i < number_of_arr) {
-        fprintf(file, "\"");
-        for (int j = 0; j < string_length; ++j) {
-            char c = 'A' + rand() % 26; // Generates a random uppercase letter
-            fprintf(file, "%c", c);
+    else if (strcmp(mode, "F") == 0)
+    {
+        // Mode F: Sorted Ascending Order
+        int arr[number_of_element];
+        for (int j = 0; j < number_of_element; j++)
+        {
+            int num = (rand() % (upper - lower + 1)) + lower;
+            arr[j] = num;
         }
-        fprintf(file, "\" ");
-        fprintf(file, "\n");
-        i++;
-    }
-}
-
-void writeRandFloat(FILE *file, float lower, float upper, int number_of_element, int number_of_arr ,int precision) {
-    int i = 0;
-    while (i < number_of_arr) {
-        int j = 0;
-        while (j < number_of_element) {
-            float num = ((float)rand() / RAND_MAX) * (upper - lower) + lower;
-            fprintf(file, "%.*f ", precision , num);
-            j++;
+        quickSort(arr,0 , number_of_element-1);
+        for (int k = 0; k < number_of_element; k++)
+        {
+            fprintf(file,"%d\n", arr[k]);
+            k++;
         }
-        fprintf(file, "\n");
-        i++;
     }
-}
-
-void writeRandDouble(FILE *file, double lower, double upper, int number_of_element, int number_of_arr) {
-    int i = 0;
-    while (i < number_of_arr) {
-        int j = 0;
-        while (j < number_of_element) {
-            double num = ((double)rand() / RAND_MAX) * (upper - lower) + lower;
-            fprintf(file, "%.2lf ", num);
-            j++;
+    else if (strcmp(mode, "G") == 0)
+    {
+        // Mode F: Sorted Descending Order
+        int arr[number_of_element];
+        for (int j = 0; j < number_of_element; j++)
+        {
+            int num = (rand() % (upper - lower + 1)) + lower;
+            arr[j] = num;
         }
-        fprintf(file, "\n");
-        i++;
+        quickSort(arr,0 , number_of_element-1);
+        int l = number_of_element;
+        for (int k = 0; k < number_of_element; k++)
+        {
+            fprintf(file,"%d\n", arr[l]);
+            l--;
+            k++;
+        }
     }
 }
 
-int main() {
+int main()
+{
     srand(time(0));
-    
-    FILE *num_test = fopen("test_int.txt", "w");
-    FILE *char_test = fopen("test_char.txt", "w");
-    FILE *str_test = fopen("test_str.txt", "w");
-    FILE *float_test = fopen("test_float.txt", "w");
-    FILE *double_test = fopen("test_double.txt", "w");
-    int decimal_place = 4;
-    int length_of_string = 8;
+    FILE* test_a = fopen("test_int_a.txt", "w");
+    FILE* test_b = fopen("test_int_b.txt", "w");
+    FILE* test_c = fopen("test_int_c.txt", "w");
+    FILE* test_d = fopen("test_int_d.txt", "w");
+    FILE* test_e = fopen("test_int_e.txt", "w");
+    FILE* test_f = fopen("test_int_f.txt", "w");
+    FILE* test_g = fopen("test_int_g.txt", "w");
     int number_of_elements = 1000;
-    int number_of_test_cases = 10;
     int lower_bound_int = -100;
     int upper_bound_int = 1000;
-    float lower_bound_float = 0.0;
-    float upper_bound_float = 4.0;
     // Example usage of functions
-    writeRandNum(num_test, lower_bound_int, upper_bound_int, number_of_elements , number_of_test_cases);
-    writeRandChar(char_test, number_of_elements, number_of_test_cases);
-    writeRandString(str_test, length_of_string, number_of_test_cases);
-    writeRandFloat(float_test, lower_bound_float, upper_bound_float, number_of_elements, number_of_test_cases , decimal_place);
-    writeRandDouble(double_test, 0.0, 1.0, number_of_elements, number_of_test_cases);
-    
-    fclose(num_test);
-    fclose(str_test);
-    fclose(char_test);
-    fclose(float_test);
-    fclose(double_test);
+    writeRandNum(test_a, lower_bound_int, upper_bound_int, number_of_elements, "A");
+    writeRandNum(test_b, lower_bound_int, upper_bound_int, number_of_elements, "B");
+    writeRandNum(test_c, lower_bound_int, upper_bound_int, number_of_elements, "C");
+    writeRandNum(test_d, lower_bound_int, upper_bound_int, number_of_elements, "D");
+    writeRandNum(test_e, lower_bound_int, upper_bound_int, number_of_elements, "E");
+    writeRandNum(test_f, lower_bound_int, upper_bound_int, number_of_elements, "F");
+    writeRandNum(test_g, lower_bound_int, upper_bound_int, number_of_elements, "G");
+    fclose(test_a);
+    fclose(test_b);
+    fclose(test_c);
+    fclose(test_d);
+    fclose(test_e);
+    fclose(test_g);
+
     return 0;
 }

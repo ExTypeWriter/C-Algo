@@ -87,7 +87,6 @@ void selectionSort(int *arr, int size)
 
 void merge(int A[], int l, int m, int r)
 {
-    int i, j, k;
     int n1 = m - l + 1;
     int n2 = r - m;
 
@@ -95,15 +94,19 @@ void merge(int A[], int l, int m, int r)
     int Left_temp[n1], Right_temp[n2];
 
     // Copy data to temp arrays L[] and R[]
-    for (i = 0; i < n1; i++)
+    for (int i = 0; i < n1; i++)
+    {
         Left_temp[i] = A[l + i];
-    for (j = 0; j < n2; j++)
+    }
+    for (int j = 0; j < n2; j++)
+    {
         Right_temp[j] = A[m + 1 + j];
+    }
 
     // Merge the temp arrays back into arr[l..r]
-    i = 0;
-    j = 0;
-    k = l;
+    int i = 0;
+    int j = 0;
+    int k = l;
     while (i < n1 && j < n2)
     {
         if (Left_temp[i] <= Right_temp[j])
@@ -217,7 +220,7 @@ void heapSort(int arr[], int size)
     for (int i = size - 1; i > 0; i--)
     {
         swap(&arr[0], &arr[i]);
-        displayArr(arr,size);
+        displayArr(arr, size);
         heapify(arr, i, 0);
     }
 }

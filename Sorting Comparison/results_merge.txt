@@ -1,20 +1,20 @@
-Run 1 - Execution time: 40.464 milliseconds, CPU usage: 0.00001%, Memory usage: 12952 KB
+Run 1 - Execution time: 43.310 milliseconds, CPU usage: 0.00076%, Memory usage: 12952 KB
 ----------------------------------------
-Run 2 - Execution time: 39.133 milliseconds, CPU usage: 0.00009%, Memory usage: 12952 KB
+Run 2 - Execution time: 40.241 milliseconds, CPU usage: 0.00116%, Memory usage: 12952 KB
 ----------------------------------------
-Run 3 - Execution time: 38.263 milliseconds, CPU usage: 0.00013%, Memory usage: 12952 KB
+Run 3 - Execution time: 43.238 milliseconds, CPU usage: 0.00046%, Memory usage: 12952 KB
 ----------------------------------------
-Run 4 - Execution time: 38.747 milliseconds, CPU usage: 0.00005%, Memory usage: 12952 KB
+Run 4 - Execution time: 42.322 milliseconds, CPU usage: 0.00153%, Memory usage: 12952 KB
 ----------------------------------------
-Run 5 - Execution time: 37.703 milliseconds, CPU usage: 0.00005%, Memory usage: 12952 KB
+Run 5 - Execution time: 40.764 milliseconds, CPU usage: 0.00100%, Memory usage: 12952 KB
 ----------------------------------------
-Run 6 - Execution time: 40.332 milliseconds, CPU usage: 0.00009%, Memory usage: 12952 KB
+Run 6 - Execution time: 42.191 milliseconds, CPU usage: 0.00077%, Memory usage: 12952 KB
 ----------------------------------------
-Run 7 - Execution time: 39.201 milliseconds, CPU usage: 0.00004%, Memory usage: 12952 KB
+Run 7 - Execution time: 43.286 milliseconds, CPU usage: 0.00140%, Memory usage: 12952 KB
 ----------------------------------------
-Run 8 - Execution time: 38.361 milliseconds, CPU usage: 0.00005%, Memory usage: 12952 KB
+Run 8 - Execution time: 41.484 milliseconds, CPU usage: 0.00048%, Memory usage: 12952 KB
 ----------------------------------------
-Run 9 - Execution time: 37.868 milliseconds, CPU usage: 0.00002%, Memory usage: 12952 KB
+Run 9 - Execution time: 41.656 milliseconds, CPU usage: 0.00072%, Memory usage: 12952 KB
 ----------------------------------------
-Run 10 - Execution time: 37.113 milliseconds, CPU usage: 0.00000%, Memory usage: 12952 KB
+Run 10 - Execution time: 41.011 milliseconds, CPU usage: 0.00009%, Memory usage: 12952 KB
 ----------------------------------------

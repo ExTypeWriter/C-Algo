@@ -1,125 +1,138 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
+#include <math.h>
 
 #define CODE_LENGTH 4
-#define POPULATION_SIZE 100
-#define MAX_GENERATIONS 1000
+#define COLORS 6
 
-// Function to generate a random code
-void generateCode(char code[CODE_LENGTH]) {
-    static const char colors[] = {'R', 'G', 'B', 'Y'};
-    for (int i = 0; i < CODE_LENGTH; ++i) {
-        code[i] = colors[rand() % 4];
+#define POP_SIZE 150
+
+#define CROSSOVER 50
+#define MUTATION 3
+#define INVERSION 2
+
+typedef struct {
+    int code[CODE_LENGTH];
+    int fitness;
+    int black, white;
+} Individual;
+
+void randCode(Individual *code) {
+    for (int i = 0; i < CODE_LENGTH; i++) {
+        code->code[i] = rand() % COLORS;
     }
 }
 
-// Function to calculate the fitness of a code (number of correct characters in correct positions)
-int calculateFitness(char code[CODE_LENGTH], char guess[CODE_LENGTH]) {
-    int fitness = 0;
-    for (int i = 0; i < CODE_LENGTH; ++i) {
-        if (code[i] == guess[i]) {
-            ++fitness;
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void createPopulation(Individual population[]) {
+    for (int i = 0; i < POP_SIZE; i++) {
+        randCode(&population[i]);
+    }
+}
+
+void crossover(Individual *parent1, Individual *parent2) {
+    int chance = rand() % 100;
+    if (chance < CROSSOVER) {
+        int point = rand() % CODE_LENGTH;
+        for (int i = point; i < CODE_LENGTH; i++) {
+            swap(&parent1->code[i], &parent2->code[i]);
         }
     }
-    return fitness;
 }
 
-// Function to perform crossover between two codes
-void crossover(char parent1[CODE_LENGTH], char parent2[CODE_LENGTH], char child[CODE_LENGTH]) {
-    int crossoverPoint = rand() % CODE_LENGTH;
-    for (int i = 0; i < crossoverPoint; ++i) {
-        child[i] = parent1[i];
-    }
-    for (int i = crossoverPoint; i < CODE_LENGTH; ++i) {
-        child[i] = parent2[i];
+void mutation(Individual *individual) {
+    int chance = rand() % 100;
+    if (chance < MUTATION) {
+        int index = rand() % CODE_LENGTH;
+        individual->code[index] = rand() % COLORS;
     }
 }
 
-// Function to perform mutation on a code
-void mutate(char code[CODE_LENGTH]) {
-    int mutationPoint = rand() % CODE_LENGTH;
-    static const char colors[] = {'R', 'G', 'B', 'Y'};
-    code[mutationPoint] = colors[rand() % 4];
-}
+void inversion(Individual *individual) {
+    int chance = rand() % 100;
+    if (chance < INVERSION) {
+        int start = rand() % CODE_LENGTH;
+        int end = rand() % CODE_LENGTH;
 
-// Function to find the index of the code with the highest fitness in the population
-int findBestCode(char population[POPULATION_SIZE][CODE_LENGTH], char secretCode[CODE_LENGTH]) {
-    int bestIndex = 0;
-    int bestFitness = calculateFitness(population[0], secretCode);
-    for (int i = 1; i < POPULATION_SIZE; ++i) {
-        int fitness = calculateFitness(population[i], secretCode);
-        if (fitness > bestFitness) {
-            bestFitness = fitness;
-            bestIndex = i;
+        if (start > end) swap(&start, &end);
+        else if (start == end) return;
+
+        while (start < end) {
+            swap(&individual->code[start], &individual->code[end]);
+            start++;
+            end--;
         }
     }
-    return bestIndex;
+}
+
+void check_BW(Individual *guess, Individual *previous) {
+    for (int i = 0; i < CODE_LENGTH; i++) {
+        if (guess->code[i] == previous->code[i]) guess->black++;
+        else {
+            for (int j = 0; j < CODE_LENGTH; j++)
+                if (guess->code[i] == previous->code[j]) guess->white++;
+        }
+    }
+}
+
+void fitnessCal(Individual code[], Individual previous[], int prev_size) {
+    for (int i = 0; i < POP_SIZE; i++) {
+        code[i].fitness = 0;
+        for (int j = 0; j < prev_size; j++) {
+            check_BW(&code[i], &previous[j]);
+            code[i].fitness += abs(previous[j].black - code[i].black) + abs(previous[j].black - code[i].black);
+        }
+    }
+}
+
+void printCode(const Individual *code) {
+    for (int i = 0; i < CODE_LENGTH; i++) {
+        printf("%d ", code->code[i]);
+    }
+    printf("\n");
+}
+
+int compareSolution(const Individual *solution, const Individual *population, int pop_size) {
+    for (int i = 0; i < pop_size; i++) {
+        if (memcmp(solution->code, population[i].code, CODE_LENGTH * sizeof(int)) == 0) {
+            return 1; // Match found
+        }
+    }
+    return 0; // No match found
 }
 
 int main() {
     srand(time(NULL));
 
-    char secretCode[CODE_LENGTH];
-    generateCode(secretCode);
+    Individual population[POP_SIZE];
+    createPopulation(population);
 
-    char population[POPULATION_SIZE][CODE_LENGTH];
+    // User input for the solution
+    Individual userSolution;
+    printf("Enter your solution (4 numbers between 0 and 5): ");
+    scanf("%d %d %d %d", &userSolution.code[0], &userSolution.code[1], &userSolution.code[2], &userSolution.code[3]);
 
-    // Initialize population with random codes
-    for (int i = 0; i < POPULATION_SIZE; ++i) {
-        generateCode(population[i]);
+    // Evaluate fitness of the initial population
+    int prev_size = 0;
+
+    fitnessCal(population, &userSolution, prev_size);
+    for(int i = 0; i < POP_SIZE; i++)
+    {
+        printf("population #%d: ", i+1);
+        printCode(&population[i]);
     }
-
-    for (int generation = 0; generation < MAX_GENERATIONS; ++generation) {
-        // Evaluate fitness of each code in the population
-        int fitnessScores[POPULATION_SIZE];
-        for (int i = 0; i < POPULATION_SIZE; ++i) {
-            fitnessScores[i] = calculateFitness(population[i], secretCode);
-        }
-
-        // Check if any code has the correct guess
-        int bestIndex = findBestCode(population, secretCode);
-        if (fitnessScores[bestIndex] == CODE_LENGTH) {
-            printf("Solution found in generation %d\n", generation);
-            printf("Secret Code: ");
-            for (int i = 0; i < CODE_LENGTH; ++i) {
-                printf("%c ", secretCode[i]);
-            }
-            printf("\nGuess: ");
-            for (int i = 0; i < CODE_LENGTH; ++i) {
-                printf("%c ", population[bestIndex][i]);
-            }
-            printf("\n");
-            break;
-        }
-
-        // Print the current generation and the best guess
-        printf("Generation %d - Best Guess: ", generation);
-        for (int i = 0; i < CODE_LENGTH; ++i) {
-            printf("%c ", population[bestIndex][i]);
-        }
-        printf("  Fitness: %d\n", fitnessScores[bestIndex]);
-
-        // Select parents for crossover using tournament selection
-        int parent1 = rand() % POPULATION_SIZE;
-        int parent2 = rand() % POPULATION_SIZE;
-        if (fitnessScores[parent1] > fitnessScores[parent2]) {
-            parent1 = parent2;
-        }
-
-        // Create a new population through crossover and mutation
-        char newPopulation[POPULATION_SIZE][CODE_LENGTH];
-        for (int i = 0; i < POPULATION_SIZE; ++i) {
-            crossover(population[parent1], population[rand() % POPULATION_SIZE], newPopulation[i]);
-            mutate(newPopulation[i]);
-        }
-
-        // Copy the new population back to the original population
-        for (int i = 0; i < POPULATION_SIZE; ++i) {
-            for (int j = 0; j < CODE_LENGTH; ++j) {
-                population[i][j] = newPopulation[i][j];
-            }
-        }
+    // Check for a match with the user solution
+    if (compareSolution(&userSolution, population, POP_SIZE)) {
+        printf("Solution found in the initial population!\n");
+    } else {
+        printf("Solution not found in the initial population.\n");
     }
 
     return 0;
